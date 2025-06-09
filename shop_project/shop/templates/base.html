@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Магазин{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        header { background-color: #333; color: white; padding: 10px 0; }
+        nav ul { list-style: none; padding: 0; display: flex; justify-content: center; }
+        nav ul li { margin: 0 15px; position: relative; }
+        nav ul li a { color: white; text-decoration: none; }
+        nav ul li a:hover { text-decoration: underline; }
+        .dropdown { position: relative; }
+        .dropdown-content { 
+            display: none; 
+            position: absolute; 
+            background-color: #444; 
+            min-width: 160px; 
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2); 
+            z-index: 1; 
+        }
+        .dropdown-content a { 
+            color: white; 
+            padding: 12px 16px; 
+            display: block; 
+            text-decoration: none; 
+        }
+        .dropdown-content a:hover { background-color: #555; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .content { padding: 20px; text-align: center; }
+        footer { background-color: #333; color: white; text-align: center; padding: 10px 0; position: fixed; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'shop:home' %}">Главная</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">О компании</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'shop:contacts' %}">Контакты</a>
+                        <a href="{% url 'shop:find_us' %}">Как нас найти</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Товары</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'shop:categories' %}">Категории</a>
+                        <a href="{% url 'shop:all_products' %}">Все товары</a>
+                    </div>
+                </li>
+                <li><a href="{% url 'shop:cart' %}">Корзина</a></li>
+                <li><a href="{% url 'shop:services' %}">Услуги</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <footer>
+        <p>© 2025 Магазин. Все права защищены.</p>
+    </footer>
+</body>
+</html>
