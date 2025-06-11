@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}о нас{% endblock %}
+{% block title %}О компании - Магазин{% endblock %}
 {% block content %}
-<h1>Про нас</h1>
-<p>Информация про компании</p>
+<h1 class="my-4">О нашей компании</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text">Мы – ведущий ритейлер спортивной атрибутики, работающий с 2000 года. Наша миссия – предоставлять фанатам качественные товары их любимых команд.</p>
+        <p class="card-text">Мы сотрудничаем с мировыми брендами, такими как Nike, Adidas и Puma, и предлагаем эксклюзивные коллекции.</p>
+        <a href="{% url 'shop:contacts' %}" class="btn btn-primary">Связаться с нами</a>
+    </div>
+</div>
 {% endblock %}

@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Корзина - Магазин{% endblock %}
 {% block content %}
-<h1>Ваша корзина</h1>
-<p>Просмотрите товары, добавленные в вашу корзину.</p>
+<h1 class="my-4">Ваша корзина</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text">Просмотрите товары, добавленные в корзину, и оформите заказ.</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Вернуться к покупкам</a>
+    </div>
+</div>
 {% endblock %}

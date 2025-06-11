@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Услуги - Магазин{% endblock %}
 {% block content %}
-<h1>Наши услуги</h1>
-<p>Мы предлагаем поддержку продуктов, гарантию и индивидуальные заказы.</p>
+<h1 class="my-4">Наши услуги</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text">Мы предлагаем персонализацию атрибутики, доставку по всему миру и поддержку клиентов.</p>
+        <a href="{% url 'shop:contacts' %}" class="btn btn-primary">Связаться для заказа</a>
+    </div>
+</div>
 {% endblock %}

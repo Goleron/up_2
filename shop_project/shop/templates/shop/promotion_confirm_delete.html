@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Удалить акцию - Магазин{% endblock %}
+{% block content %}
+<h1 class="my-4">Удалить акцию "{{ promotion.name }}"?</h1>
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a href="{% url 'shop:promotion_list' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

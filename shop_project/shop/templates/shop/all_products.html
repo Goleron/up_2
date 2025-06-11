@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Все товары - Магазин{% endblock %}
 {% block content %}
-<h1>Все товары</h1>
-<p>Ознакомьтесь с полным каталогом наших товаров.</p>
+<h1 class="my-4">Все товары</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text">Полный каталог нашей спортивной атрибутики.</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Перейти к списку товаров</a>
+    </div>
+</div>
 {% endblock %}

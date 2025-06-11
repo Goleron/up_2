@@ -1,6 +1,38 @@
 {% extends 'base.html' %}
-{% block title %}Home - Shop{% endblock %}
+{% block title %}Главная - Магазин{% endblock %}
 {% block content %}
-<h1>Добро пожаловать</h1>
-<p>Магазин Чего-то крутого</p>
+<div class="text-center my-5">
+    <h1>Добро пожаловать в наш спортивный магазин!</h1>
+    <p class="lead">Ознакомьтесь с широким ассортиментом атрибутики ваших любимых команд.</p>
+    <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">Перейти к товарам</a>
+</div>
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Новинки</h5>
+                <p class="card-text">Последние коллекции 2025 года уже в продаже!</p>
+                <a href="{% url 'shop:collection_list' %}" class="btn btn-outline-primary">Посмотреть</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Акции</h5>
+                <p class="card-text">Скидки до 50% на избранные товары.</p>
+                <a href="{% url 'shop:promotion_list' %}" class="btn btn-outline-primary">Узнать больше</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Команды</h5>
+                <p class="card-text">Атрибутика ведущих спортивных клубов.</p>
+                <a href="{% url 'shop:team_list' %}" class="btn btn-outline-primary">Выбрать команду</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

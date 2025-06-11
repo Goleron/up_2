@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Категории - Магазин{% endblock %}
 {% block content %}
-<h1>Категории товаров</h1>
-<p>Исследуйте наши товары по категориям: Электроника, Одежда, Дом и сад.</p>
+<h1 class="my-4">Категории товаров</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text">Исследуйте товары по категориям: одежда, обувь, аксессуары, экипировка.</p>
+        <a href="{% url 'shop:category_list' %}" class="btn btn-primary">Перейти к списку категорий</a>
+    </div>
+</div>
 {% endblock %}

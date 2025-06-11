@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Товары - Магазин{% endblock %}
+{% block content %}
+<h1 class="my-4">Список товаров</h1>
+<a href="{% url 'shop:product_create' %}" class="btn btn-success mb-3">Добавить товар</a>
+<div class="row">
+    {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if product.photo %}
+                    <img src="{{ product.photo.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200" class="card-img-top" alt="Нет изображения">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'shop:product_detail' product.pk %}">{{ product.name }}</a></h5>
+                    <p class="card-text">Цена: {{ product.price }} руб.</p>
+                    <p class="card-text">В наличии: {% if product.is_available %}Да{% else %}Нет{% endif %}</p>
+                    <a href="{% url 'shop:product_update' product.pk %}" class="btn btn-warning btn-sm">Редактировать</a>
+                    <a href="{% url 'shop:product_delete' product.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Товары отсутствуют.</p>
+    {% endfor %}
+</div>
+{% endblock %}

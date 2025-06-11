@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ promotion.name }} - Магазин{% endblock %}
+{% block content %}
+<h1 class="my-4">{{ promotion.name }}</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text"><strong>Скидка:</strong> {{ promotion.discount_percent }}%</p>
+        <p class="card-text"><strong>Дата начала:</strong> {{ promotion.start_date|date:"d.m.Y" }}</p>
+        <p class="card-text"><strong>Дата окончания:</strong> {{ promotion.end_date|date:"d.m.Y" }}</p>
+        <p class="card-text"><strong>Товары:</strong> 
+            {% for product in promotion.products.all %}
+                {{ product.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                Нет товаров
+            {% endfor %}
+        </p>
+        <a href="{% url 'shop:promotion_update' promotion.pk %}" class="btn btn-warning">Редактировать</a>
+        <a href="{% url 'shop:promotion_delete' promotion.pk %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'shop:promotion_list' %}" class="btn btn-primary">Назад к списку</a>
+    </div>
+</div>
+{% endblock %}

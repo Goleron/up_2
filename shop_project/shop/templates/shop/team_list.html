@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Команды - Магазин{% endblock %}
+{% block content %}
+<h1 class="my-4">Список команд</h1>
+<a href="{% url 'shop:team_create' %}" class="btn btn-success mb-3">Добавить команду</a>
+<div class="row">
+    {% for team in teams %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if team.logo %}
+                    <img src="{{ team.logo.url }}" class="card-img-top" alt="{{ team.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200" class="card-img-top" alt="Нет изображения">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'shop:team_detail' team.pk %}">{{ team.name }}</a></h5>
+                    <a href="{% url 'shop:team_update' team.pk %}" class="btn btn-warning btn-sm">Редактировать</a>
+                    <a href="{% url 'shop:team_delete' team.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Команды отсутствуют.</p>
+    {% endfor %}
+</div>
+{% endblock %}

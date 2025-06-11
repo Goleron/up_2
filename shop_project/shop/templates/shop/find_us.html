@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Как найти нас{% endblock %}
+{% block title %}Как нас найти - Магазин{% endblock %}
 {% block content %}
-<h1>Как найти нас</h1>
-<p>Адрес: Улица пушкина, дом Колотушкина</p>
-<p>Каждый день с 9 до 6</p>
+<h1 class="my-4">Как нас найти</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text"><strong>Адрес:</strong> ул. Спортивная, 10, Москва, Россия</p>
+        <p class="card-text">Мы расположены в центре города, рядом со станцией метро "Спортивная".</p>
+        <p class="card-text"><strong>Часы работы:</strong> Пн-Пт, 9:00–18:00; Сб, 10:00–16:00</p>
+        <a href="{% url 'shop:contacts' %}" class="btn btn-primary">Связаться с нами</a>
+    </div>
+</div>
 {% endblock %}

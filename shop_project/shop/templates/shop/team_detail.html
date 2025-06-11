@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}{{ team.name }} - Магазин{% endblock %}
+{% block content %}
+<h1 class="my-4">{{ team.name }}</h1>
+<div class="card mb-4">
+    {% if team.logo %}
+        <img src="{{ team.logo.url }}" class="card-img-top" alt="{{ team.name }}">
+    {% endif %}
+    <div class="card-body">
+        <p class="card-text"><strong>Описание:</strong> {{ team.description|default:"Нет описания" }}</p>
+        <a href="{% url 'shop:team_update' team.pk %}" class="btn btn-warning">Редактировать</a>
+        <a href="{% url 'shop:team_delete' team.pk %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'shop:team_list' %}" class="btn btn-primary">Назад к списку</a>
+    </div>
+</div>
+<h2 class="my-4">Товары команды</h2>
+<div class="row">
+    {% for product in team.product_set.all %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if product.photo %}
+                    <img src="{{ product.photo.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'shop:product_detail' product.pk %}">{{ product.name }}</a></h5>
+                    <p class="card-text">Цена: {{ product.price }} руб.</p>
+                    <p class="card-text">В наличии: {% if product.is_available %}Да{% else %}Нет{% endif %}</p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Товары отсутствуют.</p>
+    {% endfor %}
+</div>
+{% endblock %}
