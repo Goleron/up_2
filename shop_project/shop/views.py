@@ -125,7 +125,7 @@ class CategoryDeleteView(UpdateView):
     template_name = 'shop/category_confirm_delete.html'
     success_url = reverse_lazy('shop:category_list')
 
-# CRUD для Collection
+
 class CollectionListView(ListView):
     model = Collection
     template_name = 'shop/collection_list.html'
@@ -153,7 +153,7 @@ class CollectionDeleteView(DeleteView):
     template_name = 'shop/collection_confirm_delete.html'
     success_url = reverse_lazy('shop:collection_list')
 
-# CRUD для Promotion
+
 class PromotionListView(ListView):
     model = Promotion
     template_name = 'shop/promotion_list.html'
