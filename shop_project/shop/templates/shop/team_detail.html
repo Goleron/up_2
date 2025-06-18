@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load cart_filters %} 
 {% block title %}{{ team.name }} - Магазин{% endblock %}
 {% block content %}
 <h1 class="my-4">{{ team.name }}</h1>
@@ -8,14 +9,16 @@
     {% endif %}
     <div class="card-body">
         <p class="card-text"><strong>Описание:</strong> {{ team.description|default:"Нет описания" }}</p>
-        <a href="{% url 'shop:team_update' team.pk %}" class="btn btn-warning">Редактировать</a>
-        <a href="{% url 'shop:team_delete' team.pk %}" class="btn btn-danger">Удалить</a>
+        {% if is_staff %}
+            <a href="{% url 'shop:team_update' team.pk %}" class="btn btn-warning">Редактировать</a>
+            <a href="{% url 'shop:team_delete' team.pk %}" class="btn btn-danger">Удалить</a>
+        {% endif %}
         <a href="{% url 'shop:team_list' %}" class="btn btn-primary">Назад к списку</a>
     </div>
 </div>
 <h2 class="my-4">Товары команды</h2>
 <div class="row">
-    {% for product in team.product_set.all %}
+    {% for product in products %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 {% if product.photo %}
@@ -25,6 +28,36 @@
                     <h5 class="card-title"><a href="{% url 'shop:product_detail' product.pk %}">{{ product.name }}</a></h5>
                     <p class="card-text">Цена: {{ product.price }} руб.</p>
                     <p class="card-text">В наличии: {% if product.is_available %}Да{% else %}Нет{% endif %}</p>
+                    {% with cart_item=cart.cart|get_item:product.id %}
+                        {% if cart_item %}
+                            <form action="{% url 'cart:add_to_cart' product.id %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="-1">
+                                <input type="hidden" name="reload" value="true">
+                                <button type="submit" class="btn btn-secondary">-</button>
+                            </form>
+                            <span>В корзине: {{ cart_item.quantity }} шт</span>
+                            <form action="{% url 'cart:add_to_cart' product.id %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="reload" value="false">
+                                <button type="submit" class="btn btn-secondary">+</button>
+                            </form>
+                            {% if cart_item.quantity <= 1 %}
+                                <form action="{% url 'cart:remove' product.id %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <form action="{% url 'cart:add_to_cart' product.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="reload" value="true">
+                                <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                            </form>
+                        {% endif %}
+                    {% endwith %}
                 </div>
             </div>
         </div>

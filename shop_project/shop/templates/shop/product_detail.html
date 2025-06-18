@@ -1,29 +1,94 @@
 {% extends 'base.html' %}
 {% block title %}{{ product.name }} - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">{{ product.name }}</h1>
-<div class="card">
-    {% if product.photo %}
-        <img src="{{ product.photo.url }}" class="card-img-top" alt="{{ product.name }}">
-    {% endif %}
-    <div class="card-body">
-        <p class="card-text"><strong>Цена:</strong> {{ product.price }} руб.</p>
-        <p class="card-text"><strong>Размер:</strong> {{ product.size }}</p>
-        <p class="card-text"><strong>Категория:</strong> {{ product.category.name }}</p>
-        <p class="card-text"><strong>Команда:</strong> {{ product.team.name }}</p>
-        <p class="card-text"><strong>Производитель:</strong> {{ product.manufacturer.name }}</p>
-        <p class="card-text"><strong>Коллекции:</strong> 
-            {% for collection in product.collection.all %}
-                {{ collection.name }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-                Нет коллекций
-            {% endfor %}
-        </p>
-        <p class="card-text"><strong>В наличии:</strong> {% if product.is_available %}Да{% else %}Нет{% endif %}</p>
-        <p class="card-text"><strong>Дата создания:</strong> {{ product.create_date|date:"d.m.Y H:i" }}</p>
-        <a href="{% url 'shop:product_update' product.pk %}" class="btn btn-warning">Редактировать</a>
-        <a href="{% url 'shop:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
-        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Назад к списку</a>
+<div class="container my-5">
+    <h1 class="mb-4 text-center">{{ product.name }}</h1>
+
+    <div class="row g-4">
+        <!-- Фото товара -->
+        <div class="col-md-6">
+            {% if product.photo %}
+                <img src="{{ product.photo.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow">
+            {% else %}
+                <div class="text-muted">Изображение отсутствует</div>
+            {% endif %}
+        </div>
+
+        <!-- Описание и действия -->
+        <div class="col-md-6">
+            <ul class="list-group mb-4">
+                <li class="list-group-item"><strong>💰 Цена:</strong> {{ product.price }} руб.</li>
+                <li class="list-group-item"><strong>📏 Размер:</strong> {{ product.size }}</li>
+                <li class="list-group-item"><strong>📂 Категория:</strong> {{ product.category.name }}</li>
+                <li class="list-group-item"><strong>🏷 Команда:</strong> {{ product.team.name }}</li>
+                <li class="list-group-item"><strong>🏭 Производитель:</strong> {{ product.manufacturer.name }}</li>
+                <li class="list-group-item"><strong>📦 Коллекции:</strong>
+                    {% for collection in product.collection.all %}
+                        <span class="badge bg-primary">{{ collection.name }}</span>
+                    {% empty %}
+                        <span class="text-muted">Нет</span>
+                    {% endfor %}
+                </li>
+                <li class="list-group-item">
+                    <strong>✅ В наличии:</strong>
+                    {% if product.is_available %}
+                        <span class="text-success">Да</span>
+                    {% else %}
+                        <span class="text-danger">Нет</span>
+                    {% endif %}
+                </li>
+                <li class="list-group-item"><strong>🕒 Добавлен:</strong> {{ product.create_date|date:"d.m.Y H:i" }}</li>
+            </ul>
+
+            <!-- Кнопки для администратора -->
+            {% if is_staff %}
+                <div class="mb-3 d-flex flex-wrap gap-2">
+                    <a href="{% url 'shop:product_update' product.pk %}" class="btn btn-warning">Редактировать</a>
+                    <a href="{% url 'shop:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+                </div>
+            {% endif %}
+
+            <!-- Назад -->
+            <a href="{% url 'shop:product_list' %}" class="btn btn-outline-secondary mb-4">← Назад к списку</a>
+
+            <!-- Управление корзиной -->
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                {% if cart_item %}
+                    <form action="{% url 'cart:add_to_cart' product.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="-1">
+                        <button type="submit" class="btn btn-outline-secondary">-</button>
+                    </form>
+
+                    <span class="fw-bold">В корзине: {{ cart_item.quantity }} шт</span>
+
+                    <form action="{% url 'cart:add_to_cart' product.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-outline-secondary">+</button>
+                    </form>
+
+                    {% if cart_item.quantity <= 1 %}
+                        <form action="{% url 'cart:remove' product.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">Удалить</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="d-flex align-items-center gap-2">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="1" min="1" max="100" class="form-control" style="width: 100px;" required>
+                        <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                    </form>
+                {% endif %}
+            </div>
+
+            {% if not is_authenticated %}
+                <div class="alert alert-info mt-3">
+                    Чтобы оформить заказ, <a href="{% url 'shop:login' %}" class="alert-link">войдите в аккаунт</a>.
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

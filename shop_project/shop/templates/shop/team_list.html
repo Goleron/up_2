@@ -2,7 +2,9 @@
 {% block title %}Команды - Магазин{% endblock %}
 {% block content %}
 <h1 class="my-4">Список команд</h1>
-<a href="{% url 'shop:team_create' %}" class="btn btn-success mb-3">Добавить команду</a>
+{% if is_staff %}
+    <a href="{% url 'shop:team_create' %}" class="btn btn-success mb-3">Добавить команду</a>
+{%endif%}
 <div class="row">
     {% for team in teams %}
         <div class="col-md-4 mb-4">
@@ -14,8 +16,10 @@
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'shop:team_detail' team.pk %}">{{ team.name }}</a></h5>
-                    <a href="{% url 'shop:team_update' team.pk %}" class="btn btn-warning btn-sm">Редактировать</a>
-                    <a href="{% url 'shop:team_delete' team.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+                    {% if is_staff %}
+                        <a href="{% url 'shop:team_update' team.pk %}" class="btn btn-warning btn-sm">Редактировать</a>
+                        <a href="{% url 'shop:team_delete' team.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+                    {%endif%}
                 </div>
             </div>
         </div>

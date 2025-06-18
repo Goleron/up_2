@@ -1,11 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Категории - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">Категории товаров</h1>
-<div class="card mb-4">
-    <div class="card-body">
-        <p class="card-text">Исследуйте товары по категориям: одежда, обувь, аксессуары, экипировка.</p>
-        <a href="{% url 'shop:category_list' %}" class="btn btn-primary">Перейти к списку категорий</a>
+<div class="container my-5">
+    <h1 class="text-center mb-4">Категории товаров</h1>
+
+    <div class="card border-0 shadow-sm w-100">
+        <div class="card-body">
+            <p class="fs-5">
+                Исследуйте товары по категориям: <strong>одежда</strong>, <strong>обувь</strong>, <strong>аксессуары</strong>, <strong>экипировка</strong> и многое другое.
+            </p>
+            <p class="fs-5">
+                Каждая категория содержит тщательно подобранные товары от ведущих брендов. Откройте для себя разнообразие ассортимента!
+            </p>
+            <a href="{% url 'shop:category_list' %}" class="btn btn-outline-success btn-lg mt-3">Перейти к списку категорий</a>
+        </div>
     </div>
 </div>
 {% endblock %}

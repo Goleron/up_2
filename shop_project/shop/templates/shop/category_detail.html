@@ -1,32 +1,126 @@
 {% extends 'base.html' %}
+{% load cart_filters %} <!-- Загружаем фильтры для работы с корзиной и словарем -->
 {% block title %}{{ category.name }} - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">{{ category.name }}</h1>
-<div class="card mb-4">
-    <div class="card-body">
-        <p class="card-text"><strong>Описание:</strong> {{ category.description|default:"Нет описания" }}</p>
-        <a href="{% url 'shop:category_update' category.pk %}" class="btn btn-warning">Редактировать</a>
-        <a href="{% url 'shop:category_delete' category.pk %}" class="btn btn-danger">Удалить</a>
-        <a href="{% url 'shop:category_list' %}" class="btn btn-primary">Назад к списку</a>
-    </div>
-</div>
-<h2 class="my-4">Товары в категории</h2>
-<div class="row">
-    {% for product in category.product_set.all %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                {% if product.photo %}
-                    <img src="{{ product.photo.url }}" class="card-img-top" alt="{{ product.name }}">
+<div class="container my-5">
+    <h1 class="text-center mb-4">{{ category.name }}</h1>
+
+    <!-- Информация о категории -->
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body">
+            <p class="fs-5"><strong>Описание:</strong> {{ category.description|default:"Нет описания" }}</p>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                {% if is_staff %}
+                    <a href="{% url 'shop:category_update' category.pk %}" class="btn btn-warning">Редактировать</a>
+                    <a href="{% url 'shop:category_delete' category.pk %}" class="btn btn-danger">Удалить</a>
                 {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'shop:product_detail' product.pk %}">{{ product.name }}</a></h5>
-                    <p class="card-text">Цена: {{ product.price }} руб.</p>
-                    <p class="card-text">В наличии: {% if product.is_available %}Да{% else %}Нет{% endif %}</p>
-                </div>
+                <a href="{% url 'shop:category_list' %}" class="btn btn-outline-secondary">← Назад к списку</a>
             </div>
         </div>
-    {% empty %}
-        <p>Товары отсутствуют.</p>
-    {% endfor %}
+    </div>
+
+    <!-- Список товаров категории -->
+    <h2 class="mb-4">Товары в категории</h2>
+    <div class="row">
+        {% for product in category_products %}
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if product.photo %}
+                        <img src="{{ product.photo.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text mb-1">Цена: <strong>{{ product.price }} руб.</strong></p>
+                        <p class="card-text">
+                            В наличии: 
+                            {% if product.is_available %}
+                                <span class="text-success">Да</span>
+                            {% else %}
+                                <span class="text-danger">Нет</span>
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'shop:product_detail' product.pk %}" class="btn btn-primary mt-auto">Подробнее</a>
+                        {% with cart_item=cart.cart|get_item:product.id|stringformat:"s" %}
+                            {% if cart_item %}
+                                <div class="mt-2 d-flex justify-content-between">
+                                    <form action="{% url 'cart:add_to_cart' product.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quantity" value="-1">
+                                        <button type="submit" class="btn btn-secondary btn-sm">-</button>
+                                    </form>
+                                    <span>В корзине: {{ cart_item.quantity }} шт</span>
+                                    <form action="{% url 'cart:add_to_cart' product.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-secondary btn-sm">+</button>
+                                    </form>
+                                </div>
+                                {% if cart_item.quantity <= 1 %}
+                                    <form action="{% url 'cart:remove' product.id %}" method="post" class="mt-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="mt-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-primary btn-sm">Добавить в корзину</button>
+                                </form>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="alert alert-info text-center fs-5">В этой категории пока нет товаров.</div>
+        {% endfor %}
+    </div>
+
+    <!-- Список товаров коллекций -->
+    <h2 class="mt-5 mb-4">Связанные коллекции и их товары</h2>
+    {% if collections %}
+        {% for collection in collections %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ collection.name }}</h5>
+                    <p class="card-text"><strong>Описание:</strong> {{ collection.description|default:"Нет описания" }}</p>
+                    {% with products=collection_products|dict_key:collection.id %}
+                        {% if products.exists %}
+                            <div class="row">
+                                {% for product in products %}
+                                    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                                        <div class="card h-100 shadow-sm">
+                                            {% if product.photo %}
+                                                <img src="{{ product.photo.url }}" class="card-img-top" alt="{{ product.name }}">
+                                            {% endif %}
+                                            <div class="card-body d-flex flex-column">
+                                                <h6 class="card-title">{{ product.name }}</h6>
+                                                <p class="card-text mb-1">Цена: <strong>{{ product.price }} руб.</strong></p>
+                                                <p class="card-text">
+                                                    В наличии: 
+                                                    {% if product.is_available %}
+                                                        <span class="text-success">Да</span>
+                                                    {% else %}
+                                                        <span class="text-danger">Нет</span>
+                                                    {% endif %}
+                                                </p>
+                                                <a href="{% url 'shop:product_detail' product.pk %}" class="btn btn-primary btn-sm mt-auto">Подробнее</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">В этой коллекции пока нет товаров.</div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center fs-5">Коллекции для этой категории отсутствуют.</div>
+    {% endif %}
 </div>
 {% endblock %}

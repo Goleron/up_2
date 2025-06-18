@@ -1,11 +1,56 @@
 {% extends 'base.html' %}
 {% block title %}Корзина - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">Ваша корзина</h1>
-<div class="card mb-4">
-    <div class="card-body">
-        <p class="card-text">Просмотрите товары, добавленные в корзину, и оформите заказ.</p>
-        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Вернуться к покупкам</a>
-    </div>
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Ваша корзина</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if cart_items %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Товар</th>
+                        <th>Количество</th>
+                        <th>Цена</th>
+                        <th>Итого</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product, quantity, item_total in cart_items %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td class="text-center">{{ quantity }}</td>
+                            <td>{{ product.price }} руб.</td>
+                            <td><strong>{{ item_total }} руб.</strong></td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="table-light">
+                        <td colspan="3" class="text-end"><strong>Общая сумма:</strong></td>
+                        <td><strong>{{ total }} руб.</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <form method="post" action="{% url 'shop:create_order' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-lg px-5">Создать заказ</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center fs-5">
+            Ваша корзина пуста.
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'shop:all_products' %}" class="btn btn-outline-primary">Перейти к товарам</a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

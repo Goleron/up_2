@@ -1,13 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}Контакты - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">Свяжитесь с нами</h1>
-<div class="card mb-4">
-    <div class="card-body">
-        <p class="card-text"><strong>Email:</strong> info@sportshop.ru</p>
-        <p class="card-text"><strong>Телефон:</strong> +7-800-123-4567</p>
-        <p class="card-text"><strong>Адрес:</strong> ул. Спортивная, 10, Москва, Россия</p>
-        <p class="card-text"><strong>Часы работы:</strong> Пн-Пт, 9:00–18:00</p>
+<div class="container my-5">
+    <h1 class="text-center mb-4">Свяжитесь с нами</h1>
+
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 600px;">
+        <div class="card-body fs-5">
+            <p class="mb-3">
+                <strong>📧 Email:</strong> <a href="mailto:info@sportshop.ru" class="text-decoration-none">info@sportshop.ru</a>
+            </p>
+            <p class="mb-3">
+                <strong>📞 Телефон:</strong> <a href="tel:+78001234567" class="text-decoration-none">+7-800-123-4567</a>
+            </p>
+            <p class="mb-3">
+                <strong>📍 Адрес:</strong> ул. Спортивная, 10, Москва, Россия
+            </p>
+            <p class="mb-0">
+                <strong>🕒 Часы работы:</strong> Пн–Пт, 09:00–18:00
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,32 +1,49 @@
 {% extends 'base.html' %}
 {% block title %}Коллекции - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">Список коллекций</h1>
-<a href="{% url 'shop:collection_create' %}" class="btn btn-success mb-3">Добавить коллекцию</a>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Название</th>
-            <th>Год</th>
-            <th>Описание</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for collection in collections %}
-            <tr>
-                <td><a href="{% url 'shop:collection_detail' collection.pk %}">{{ collection.name }}</a></td>
-                <td>{{ collection.year }}</td>
-                <td>{{ collection.description|default:"Нет описания" }}</td>
-                <td>
-                    <a href="{% url 'shop:collection_detail' collection.pk %}" class="btn btn-sm btn-info">Подробно</a>
-                    <a href="{% url 'shop:collection_update' collection.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-                    <a href="{% url 'shop:collection_delete' collection.pk %}" class="btn btn-sm btn-danger">Удалить</a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="4">Коллекции отсутствуют.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Список коллекций</h1>
+        <a href="{% url 'shop:collection_create' %}" class="btn btn-success">+ Добавить коллекцию</a>
+    </div>
+
+    {% if collections %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Название</th>
+                        <th>Год</th>
+                        <th>Описание</th>
+                        <th style="width: 200px;">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for collection in collections %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'shop:collection_detail' collection.pk %}" class="fw-semibold">
+                                    {{ collection.name }}
+                                </a>
+                            </td>
+                            <td class="text-center">{{ collection.year }}</td>
+                            <td>{{ collection.description|default:"Нет описания" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'shop:collection_detail' collection.pk %}" class="btn btn-sm btn-info me-1">Подробно</a>
+                                {% if is_staff %}
+                                    <a href="{% url 'shop:collection_update' collection.pk %}" class="btn btn-sm btn-warning me-1">Редактировать</a>
+                                    <a href="{% url 'shop:collection_delete' collection.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center fs-5">
+            Коллекции отсутствуют.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

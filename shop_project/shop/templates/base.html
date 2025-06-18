@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Магазин спортивных товаров{% endblock %}</title>
+    <title>{% block title %}ttetettete{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -12,6 +12,7 @@
             flex-direction: column;
             min-height: 100vh;
             margin: 0;
+            position: relative;
         }
         .navbar-brand { font-weight: bold; }
         .content { flex: 1 0 auto; padding: 20px; }
@@ -30,6 +31,37 @@
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
         .table { margin-top: 20px; }
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cart-controls button {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2em;
+            padding: 0;
+        }
+        .cart-controls .count {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            animation: fadeOut 3s forwards;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
     </style>
 </head>
 <body>
@@ -58,19 +90,18 @@
                                 <li><a class="dropdown-item" href="{% url 'shop:categories' %}">Категории</a></li>
                                 <li><a class="dropdown-item" href="{% url 'shop:all_products' %}">Все товары</a></li>
                                 <li><a class="dropdown-item" href="{% url 'shop:product_list' %}">Список товаров</a></li>
-                                <li><a class="dropdown-item" href="{% url 'shop:category_list' %}">Список категорий</a></li>
-                                <li><a class="dropdown-item" href="{% url 'shop:collection_list' %}">Список коллекций</a></li>
-                                <li><a class="dropdown-item" href="{% url 'shop:promotion_list' %}">Список акций</a></li>
                             </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'shop:team_list' %}">Команды</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'shop:cart' %}">Корзина</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'shop:services' %}">Услуги</a>
+                            {% if is_authenticated %}
+                                <a class="nav-link" href="{% url 'shop:logout' %}">Выход</a>
+                            {% else %}
+                                <a class="nav-link" href="{% url 'shop:login' %}">Авторизация</a>
+                                <a class="nav-link" href="{% url 'shop:register' %}">регистрация</a>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>
@@ -87,6 +118,95 @@
             <p class="mb-0"><a href="{% url 'shop:contacts' %}" class="text-white">Связаться с нами</a> | <a href="{% url 'shop:services' %}" class="text-white">Наши услуги</a></p>
         </div>
     </footer>
+    <div class="notification" id="cartNotification">Товар добавлен в корзину.</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notification = document.getElementById('cartNotification');
+            document.queryNotification = function(message) {
+                notification.textContent = message;
+                notification.style.display = 'block';
+                setTimeout(() => notification.style.display = 'none', 3000);
+            };
+
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productId = this.getAttribute('data-product-id');
+                    fetch(`/add-to-cart/${productId}/`, {
+                        method: 'GET',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.queryNotification(data.message);
+                            updateCartControls(productId, data.count);
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => console.error('Ошибка:', error));
+                });
+            });
+
+            function updateCartControls(productId, count) {
+                const button = document.querySelector(`.add-to-cart[data-product-id="${productId}"]`);
+                if (button) {
+                    if (count > 0) {
+                        button.outerHTML = `
+                            <div class="cart-controls" data-product-id="${productId}">
+                                <button class="btn btn-secondary decrement">-</button>
+                                <span class="count">${count}</span>
+                                <button class="btn btn-secondary increment">+</button>
+                                <a href="{% url 'shop:cart' %}" class="btn btn-primary">Перейти в корзину</a>
+                            </div>
+                        `;
+                        setupCartControls(productId, count);
+                    }
+                }
+            }
+
+            function setupCartControls(productId, initialCount) {
+                const controls = document.querySelector(`.cart-controls[data-product-id="${productId}"]`);
+                if (controls) {
+                    const decrementBtn = controls.querySelector('.decrement');
+                    const incrementBtn = controls.querySelector('.increment');
+                    const countSpan = controls.querySelector('.count');
+
+                    incrementBtn.addEventListener('click', () => {
+                        fetch(`/update-cart/${productId}/increment/`, {
+                            method: 'GET',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                countSpan.textContent = data.count;
+                                document.queryNotification('Товар добавлен в корзину');
+                            }
+                        });
+                    });
+
+                    decrementBtn.addEventListener('click', () => {
+                        fetch(`/update-cart/${productId}/decrement/`, {
+                            method: 'GET',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                countSpan.textContent = data.count;
+                                if (data.count === 0) {
+                                    controls.outerHTML = `<a href="#" class="btn btn-primary add-to-cart" data-product-id="${productId}">Добавить в корзину</a>`;
+                                }
+                                document.queryNotification('Товар удален из корзины');
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 </html>

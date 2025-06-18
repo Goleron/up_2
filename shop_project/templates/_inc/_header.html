@@ -1,30 +1,47 @@
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'shop:home' %}">Спортивный магазин</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'shop:home' %}">Главная</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">О компании</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'shop:contacts' %}">Контакты</a></li>
-                            <li><a class="dropdown-item" href="{% url 'shop:find_us' %}">Как нас найти</a></li>
-                        </ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'shop:home' %}">🏟 Магазин</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-2">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'shop:home' %}">Главная</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Товары
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'shop:categories' %}">Категории</a></li>
+                        <li><a class="dropdown-item" href="{% url 'shop:all_products' %}">Все товары</a></li>
+                        <li><a class="dropdown-item" href="{% url 'shop:product_list' %}">Список товаров</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cart:cart_detail' %}">
+                        🛒 Корзина
+                    </a>
+                </li>
+
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:logout' %}">🚪 Выход</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Товары</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'shop:product_list' %}">Список товаров</a></li>
-                            <li><a class="dropdown-item" href="{% url 'shop:category_list' %}">Категории</a></li>
-                        </ul>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:login' %}">🔐 Вход</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'shop:team_list' %}">Команды</a></li>
-                </ul>
-            </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:register' %}">📝 Регистрация</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
-</header>
+    </div>
+</nav>

@@ -1,11 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Товары - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">Наши товары</h1>
-<div class="card mb-4">
-    <div class="card-body">
-        <p class="card-text">Ознакомьтесь с нашим ассортиментом спортивной атрибутики: футболки, кроссовки, аксессуары и многое другое.</p>
-        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Перейти к списку товаров</a>
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Наши товары</h1>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center">
+            <p class="card-text fs-5 mb-4">
+                Ознакомьтесь с нашим ассортиментом спортивной атрибутики — от футболок и кроссовок до аксессуаров и профессиональной экипировки.
+            </p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">
+                Перейти к списку товаров
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}

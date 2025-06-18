@@ -4,16 +4,14 @@ from . import views
 app_name = 'shop'
 
 urlpatterns = [
-    # Статические страницы
-    path('', views.home, name='home'),
-    path('about/', views.about, name='about'),
-    path('contacts/', views.contacts, name='contacts'),
-    path('find_us/', views.find_us, name='find_us'),
-    path('products/', views.products, name='products'),
-    path('categories/', views.categories, name='categories'),
-    path('all-products/', views.all_products, name='all_products'),
-    path('cart/', views.cart, name='cart'),
-    path('services/', views.services, name='services'),
+    path('', views.HomeView.as_view(), name='home'),
+    path('about/', views.AboutView.as_view(), name='about'),
+    path('contacts/', views.ContactsView.as_view(), name='contacts'),
+    path('find_us/', views.FindUsView.as_view(), name='find_us'),
+    path('products/', views.ProductsView.as_view(), name='products'),
+    path('categories/', views.CategoriesView.as_view(), name='categories'),
+    path('all-products/', views.AllProductsView.as_view(), name='all_products'),
+    path('services/', views.ServicesView.as_view(), name='services'),
     # CRUD для Product
     path('products/list/', views.ProductListView.as_view(), name='product_list'),
     path('products/<int:pk>/', views.ProductDetailView.as_view(), name='product_detail'),
@@ -23,9 +21,6 @@ urlpatterns = [
     # CRUD для Team
     path('teams/list/', views.TeamListView.as_view(), name='team_list'),
     path('teams/<int:pk>/', views.TeamDetailView.as_view(), name='team_detail'),
-    path('teams/create/', views.TeamCreateView.as_view(), name='team_create'),
-    path('teams/<int:pk>/update/', views.TeamUpdateView.as_view(), name='team_update'),
-    path('teams/<int:pk>/delete/', views.TeamDeleteView.as_view(), name='team_delete'),
     # CRUD для Category
     path('categories/list/', views.CategoryListView.as_view(), name='category_list'),
     path('categories/<int:pk>/', views.CategoryDetailView.as_view(), name='category_detail'),
@@ -44,4 +39,8 @@ urlpatterns = [
     path('promotions/create/', views.PromotionCreateView.as_view(), name='promotion_create'),
     path('promotions/<int:pk>/update/', views.PromotionUpdateView.as_view(), name='promotion_update'),
     path('promotions/<int:pk>/delete/', views.PromotionDeleteView.as_view(), name='promotion_delete'),
+    # Авторизация и регистрация
+    path('login/', views.user_login, name='login'),
+    path('register/', views.user_register, name='register'),
+    path('logout/', views.user_logout, name='logout'),
 ]

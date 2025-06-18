@@ -1,12 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}О компании - Магазин{% endblock %}
 {% block content %}
-<h1 class="my-4">О нашей компании</h1>
-<div class="card mb-4">
-    <div class="card-body">
-        <p class="card-text">Мы – ведущий ритейлер спортивной атрибутики, работающий с 2000 года. Наша миссия – предоставлять фанатам качественные товары их любимых команд.</p>
-        <p class="card-text">Мы сотрудничаем с мировыми брендами, такими как Nike, Adidas и Puma, и предлагаем эксклюзивные коллекции.</p>
-        <a href="{% url 'shop:contacts' %}" class="btn btn-primary">Связаться с нами</a>
+<div class="container my-5">
+    <h1 class="mb-4 text-center">О нашей компании</h1>
+    
+    <div class="row align-items-center">
+        <!-- Левая часть — изображение -->
+        <div class="col-md-6 mb-4 mb-md-0">
+            <img src="{% static 'img/about_us.jpg' %}" alt="О компании" class="img-fluid rounded shadow">
+        </div>
+
+        <!-- Правая часть — текст -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <p class="card-text fs-5">Мы – <strong>ведущий ритейлер спортивной атрибутики</strong>, работающий с 2000 года. Наша миссия – предоставлять фанатам качественные товары их любимых команд.</p>
+                    <p class="card-text fs-5">Мы сотрудничаем с мировыми брендами, такими как <strong>Nike</strong>, <strong>Adidas</strong> и <strong>Puma</strong>, и предлагаем эксклюзивные коллекции, которых нет в других магазинах.</p>
+                    <a href="{% url 'shop:contacts' %}" class="btn btn-outline-primary mt-3">Связаться с нами</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

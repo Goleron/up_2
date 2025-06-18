@@ -2,7 +2,9 @@
 {% block title %}Акции - Магазин{% endblock %}
 {% block content %}
 <h1 class="my-4">Список акций</h1>
-<a href="{% url 'shop:promotion_create' %}" class="btn btn-success mb-3">Добавить акцию</a>
+{%if is_staff%}
+    <a href="{% url 'shop:promotion_create' %}" class="btn btn-success mb-3">Добавить акцию</a>
+{%endif%}
 <table class="table table-striped">
     <thead>
         <tr>
